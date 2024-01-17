@@ -1,0 +1,24 @@
+- name: Purge Everything
+  hosts: testServers
+  become: true
+  tasks:
+    - name: Remove the user 'hillel' 
+      ansible.builtin.user:
+        name: hillel
+        state: absent
+
+    - name: Remove software set
+      ansible.builtin.apt:
+        state: absent
+        name:
+          - nginx
+          - git
+    
+    - name: Check if the protected package is installed
+      ansible.builtin.command: dpkg -l | grep gzip
+      register: package_check
+      ignore_errors: yes
+
+    - name: Remove the protected package if it's installed
+      ansible.builtin.command: apt-get remove -y --allow-remove-essential gzip
+      when: package_check.stdout != ""
