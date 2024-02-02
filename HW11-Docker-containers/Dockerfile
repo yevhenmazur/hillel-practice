@@ -14,6 +14,13 @@ RUN go install -tags standard github.com/gohugoio/hugo@latest
 
 FROM alpine:latest
 
+MAINTAINER Yevhen Mazur <yevhen.mazur@pm.me>
+ARG REFRESHED_AT=0000-00-00
+ARG GID=1024
+ARG UID=1001
+
+ENV SITENAME=hugo.local
+
 # Install runtime
 RUN apk add --update --no-cache \
       ca-certificates \
@@ -24,8 +31,11 @@ RUN apk add --update --no-cache \
     # clean up
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 
+# add init script
+ADD --chmod=755 ./opt/bin/hugo-init.sh /opt/bin/hugo-init.sh
+
 # create user for run hugo-server
-RUN addgroup -S -g 1024 hugo && adduser -G hugo -S -D -H hugo-server
+RUN addgroup -S -g $GID hugo && adduser -G hugo -u $UID -S -D -H hugo-server
 USER hugo-server
 
 # bring over binary from build stage
@@ -38,5 +48,5 @@ WORKDIR /src
 # expose live-refresh server on default port
 EXPOSE 1313
 
-ENTRYPOINT ["hugo"]
+ENTRYPOINT ["/opt/bin/hugo-init.sh"]
 #CMD ["server", "--bind", " 0.0.0.0"]
