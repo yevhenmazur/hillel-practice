@@ -34,4 +34,4 @@ override.tf.json
 terraform.rc
 
 .vscode
-./HW11-Docker-containers/src/
+HW11-Docker-containers/src
