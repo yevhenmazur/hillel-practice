@@ -1,0 +1,13 @@
+services:
+  hugo:
+    build:
+      context: .
+      args:
+        UID: ${UID}
+        GID: ${GID}
+    ports:
+      - "80:1313"
+    volumes:
+      - ./src:/src
+    environment:
+      - SITENAME=${SITENAME}

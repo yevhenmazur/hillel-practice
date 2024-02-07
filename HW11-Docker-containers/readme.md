@@ -18,4 +18,10 @@ The build command is stored in the `build.sh` file.
 The server inside the container is run by a user with limited permissions. You can override the UID and GID of this user to manage permissions in /src directory flexibly. To do this, pass them as arguments during the build.
 
 For example:
+
 `docker build --build-arg UID=1001 --build-arg GID=1024 -t yevhenmazur/hugo:0.122.0-1 ./`
+
+### Docker Compose
+You can also use Docker Compose to build and run the application. To do this, edit the values of the variables in the `.env` file and run the command
+
+`docker compose up`
