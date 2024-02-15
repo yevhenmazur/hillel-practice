@@ -1,0 +1,14 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      working-directory: HW11-Docker-containers
+      run: docker build --build-arg REFRESHED_AT=$(date --rfc-3339='date') . --tag yevhenmazur/hugo:$(date +%s)
