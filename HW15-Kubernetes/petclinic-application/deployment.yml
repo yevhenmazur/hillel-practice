@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-petclinic
+  namespace: petclinic
+  labels:
+    app: petclinic
+    type: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petclinic
+  template:
+    metadata:
+      labels:
+        app: petclinic
+    spec:
+      containers:
+      - name: petclinic
+        image: spring-petclinic:3.2.0-SNAPSHOT
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+          - name: spring.profiles.active
+            value: mysql
+        volumeMounts:
+          - name: config-app
+            mountPath: /workspace/BOOT-INF/classes/application.properties
+            subPath: "application.properties"
+            readOnly: true
+          - name: config-mysql
+            mountPath: /workspace/BOOT-INF/classes/application-mysql.properties
+            subPath: "application-mysql.properties"
+            readOnly: true
+      volumes:
+      - name: config-app
+        configMap:
+          name: petclinic-app-conf
+          items:
+          - key: "application.properties"
+            path: "application.properties"
+      - name: config-mysql
+        configMap:
+          name: petclinic-mysql-conf
+          items:
+          - key: "application-mysql.properties"
+            path: "application-mysql.properties"
