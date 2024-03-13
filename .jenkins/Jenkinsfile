@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Docker Login') {
+            steps {
+                sh "echo $DOCKERHUB_TOCKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin"
+            }
+        }
+        stage('Docker build') {
+            steps {
+                sh "docker build --build-arg REFRESHED_AT=\$(date --rfc-3339='date') --build-arg UID=1001 --build-arg GID=1024 ./HW11-Docker-containers/"
+            }
+        }
+        stage('Docker tag and push') {
+            steps {
+                sh """
+                docker tag 0.122.0-1 yevhenmazur/hugo
+                docker push yevhenmazur/hugo
+                """
+            }
+        }
+    }
+}
